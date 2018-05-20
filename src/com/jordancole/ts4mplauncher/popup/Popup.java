@@ -10,7 +10,6 @@ import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,7 +23,7 @@ public class Popup {
 	private String title;
 	private JPanel content, topBar;
 	private JButton exitBtn;
-	private JDialog frame;
+	private JFrame frame;
 	private boolean isClosed;
 	private Point initialClick;
 	
@@ -37,7 +36,7 @@ public class Popup {
 	public void start(){
 
 		isClosed = false;
-		frame = new JDialog();
+		frame = new JFrame();
 		frame.setTitle(title);
 		frame.setSize(content.getSize());
 		frame.setLocationRelativeTo(null);
@@ -45,6 +44,7 @@ public class Popup {
 		frame.setUndecorated(true);
 		//frame.setAlwaysOnTop(true);
 		frame.setLayout(null);
+		frame.setIconImage(Utils.getImage("ts4_icon.png"));
 		
 		topBar = new JPanel();
 		topBar.setFont(DEFAULT_FONT);
@@ -121,7 +121,7 @@ public class Popup {
 		return isClosed;
 	}
 	
-	public JDialog getFrame(){
+	public JFrame getFrame(){
 		return frame;
 	}
 	

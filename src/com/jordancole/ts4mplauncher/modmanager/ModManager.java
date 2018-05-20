@@ -124,4 +124,8 @@ public class ModManager {
 		Desktop.getDesktop().open(TS4MPLauncher.gameDir);
 	}
 	
+	public static void portForward(int port){
+		
+	}
+	
 }

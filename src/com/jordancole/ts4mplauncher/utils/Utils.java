@@ -3,6 +3,8 @@ package com.jordancole.ts4mplauncher.utils;
 import static com.jordancole.ts4mplauncher.window.LauncherWindow.DEFAULT_FONT;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -23,6 +25,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -218,10 +221,10 @@ public class Utils {
 				- (modsFolderLabel
 						.getFontMetrics(modsFolderLabel.getFont())
 						.stringWidth(modsFolderLabel.getText()) / 2), 100);
-
-		JLabel gameFolderLabel = new JLabel("The Sims 4 Application Folder");
+		
+		JLabel gameFolderLabel = new JLabel("The Sims 4 Application Executable");
 		gameFolderLabel.setFont(DEFAULT_FONT);
-		gameFolderLabel.setSize(200, 15);
+		gameFolderLabel.setSize(250, 15);
 		panel.add(gameFolderLabel);
 		gameFolderLabel.setLocation((panel.getWidth() / 2)
 				- (gameFolderLabel
@@ -233,7 +236,6 @@ public class Utils {
 		modsFolder.setSize(200, 20);
 		modsFolder.setFont(DEFAULT_FONT);
 		panel.add(modsFolder);
-		modsFolder.setText("Click to select a folder!");
 		
 		if (FileManager.getInstance().getConfig().containsKey("modsFolder")) {
 			modsFolder.setText(FileManager.getInstance().getConfig()
@@ -243,26 +245,12 @@ public class Utils {
 		modsFolder.setEnabled(false);
 		modsFolder.setLocation(
 				(panel.getWidth() / 2) - (modsFolder.getWidth() / 2), 125);
-
-		modsFolder.addMouseListener(new MouseAdapter(){
-			public void mouseClicked(MouseEvent e){
-				JFileChooser f = new JFileChooser();
-				f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				f.showOpenDialog(null);
-				if(f.getSelectedFile() == null) return;
-				modsFolder.setText(f.getSelectedFile().getAbsolutePath());
-				TS4MPLauncher.modsFolder = f.getSelectedFile();
-				FileManager.getInstance().getConfig().setProperty("modsFolder", f.getSelectedFile().getAbsolutePath());
-				FileManager.getInstance().save();
-			}
-		});
 		
 		JTextField gameFolder = new JTextField();
 
 		gameFolder.setSize(200, 20);
 		gameFolder.setFont(DEFAULT_FONT);
 		panel.add(gameFolder);
-		gameFolder.setText("Click to select an executable!");
 		
 		if (FileManager.getInstance().getConfig().containsKey("gameFolder")) {
 			gameFolder.setText(FileManager.getInstance().getConfig()
@@ -274,31 +262,65 @@ public class Utils {
 				(panel.getWidth() / 2) - (gameFolder.getWidth() / 2), 225);
 
 		gameFolder.addMouseListener(new MouseAdapter(){
-			public void mouseClicked(MouseEvent e){
+			public void mouseClicked(MouseEvent e){}
+		});
+		
+		JButton folderOne = new JButton();
+		folderOne.setSize(32, 32);
+		folderOne.setContentAreaFilled(false);
+		folderOne.setFocusPainted(false);
+		folderOne.setBorderPainted(false);
+		folderOne.setIcon(new ImageIcon(Utils.getImage("folderIcon.png")));
+		folderOne.setRolloverEnabled(true);
+		folderOne.setRolloverIcon(new ImageIcon(Utils.getImage("folderIconHover.png")));
+		panel.add(folderOne);
+		folderOne.setLocation((panel.getWidth() / 2) - (modsFolder.getWidth() / 2) + 205, 120);
+		
+		folderOne.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser f = new JFileChooser();
+				f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				f.showOpenDialog(null);
+				if(f.getSelectedFile() == null) return;
+				modsFolder.setText(f.getSelectedFile().getAbsolutePath());
+				TS4MPLauncher.modsFolder = f.getSelectedFile();
+				FileManager.getInstance().getConfig().setProperty("modsFolder", f.getSelectedFile().getAbsolutePath());
+				FileManager.getInstance().save();
+			}
+			
+		});
+		
+		JButton folderTwo = new JButton();
+		folderTwo.setSize(32, 32);
+		folderTwo.setContentAreaFilled(false);
+		folderTwo.setFocusPainted(false);
+		folderTwo.setBorderPainted(false);
+		folderTwo.setIcon(new ImageIcon(Utils.getImage("folderIcon.png")));
+		folderTwo.setRolloverEnabled(true);
+		folderTwo.setRolloverIcon(new ImageIcon(Utils.getImage("folderIconHover.png")));
+		panel.add(folderTwo);
+		folderTwo.setLocation((panel.getWidth() / 2) - (gameFolder.getWidth() / 2) + 205, 220);
+		
+		folderTwo.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+
 				JFileChooser f = new JFileChooser();
 				f.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				f.setFileFilter(new javax.swing.filechooser.FileFilter(){
-
-					@Override
-					public boolean accept(File f) {
-						return FilenameUtils.getExtension(f.getName()).equalsIgnoreCase("exe");
-					}
-
-					@Override
-					public String getDescription() {
-						return "";
-					}
-					
-				});
 				f.showOpenDialog(null);
 				
 				if(f.getSelectedFile() == null) return;
+				if(FilenameUtils.getExtension(f.getSelectedFile().getName()).equalsIgnoreCase("exe") == false) return;
 				
 				gameFolder.setText(f.getSelectedFile().getAbsolutePath());
 				TS4MPLauncher.gameDir = f.getSelectedFile();
 				FileManager.getInstance().getConfig().setProperty("gameFolder", f.getSelectedFile().getAbsolutePath());
 				FileManager.getInstance().save();
 			}
+			
 		});
 		
 		JButton updateBtn = new JButton("Save");
@@ -320,7 +342,7 @@ public class Utils {
 			public void mouseClicked(java.awt.event.MouseEvent e) {
 				if (Popup.currentPopup == null)
 					return;
-
+				
 				Popup.currentPopup.closePopup();
 			}
 
